@@ -246,8 +246,7 @@ class ToolRegistry:
             tool.is_dynamic,
         )
 
-        # Check duplicate tool name, throw on duplicate tool names except if hot_reloading is enabled
-        if tool.tool_name in self.registry and not tool.supports_hot_reload:
+        if tool.tool_name in self.registry:
             raise ValueError(
                 f"Tool name '{tool.tool_name}' already exists. Cannot register tools with exact same name."
             )

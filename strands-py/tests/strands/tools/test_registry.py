@@ -175,8 +175,7 @@ def test_register_tool_duplicate_name_without_hot_reload():
 
 
 def test_register_tool_duplicate_name_with_hot_reload():
-    """Test that registering a tool with duplicate name succeeds when hot reload is supported."""
-    # Create mock tools with hot reload support
+    """Test that registering a tool with duplicate name raises ValueError when hot reload is supported."""
     tool_1 = MagicMock(spec=PythonAgentTool)
     tool_1.tool_name = "hot_reload_tool"
     tool_1.supports_hot_reload = True
@@ -190,10 +189,12 @@ def test_register_tool_duplicate_name_with_hot_reload():
     tool_registry = ToolRegistry()
     tool_registry.register_tool(tool_1)
 
-    tool_registry.register_tool(tool_2)
+    with pytest.raises(
+        ValueError, match="Tool name 'hot_reload_tool' already exists. Cannot register tools with exact same name."
+    ):
+        tool_registry.register_tool(tool_2)
 
-    # Verify the second tool replaced the first
-    assert tool_registry.registry["hot_reload_tool"] == tool_2
+    assert tool_registry.registry["hot_reload_tool"] == tool_1
 
 
 def test_register_strands_tools_from_module():
